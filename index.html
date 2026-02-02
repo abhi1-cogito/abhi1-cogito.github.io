@@ -20,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #ffeef8 0%, #ffe6f0 25%, #ffd6e8 50%, #ffc6e0 75%, #ffb6d8 100%);
+            background: transparent;
             overflow: hidden;
             position: relative;
         }
@@ -37,6 +37,17 @@
             animation: floatHearts 20s linear infinite;
             white-space: nowrap;
         }
+
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+        }
+
 
         @keyframes floatHearts {
             from { transform: translateY(0) translateX(0); }
@@ -157,9 +168,92 @@
             pointer-events: none;
             z-index: 100;
         }
+
+
+        #bgWrapper {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    transition: opacity 0.6s ease;
+}
+
+#bgWrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#bgVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+
+
+
+
+
+
+
+
+#gifGroup {
+    display: none;
+    margin-top: 1.5rem;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: 1fr; */
+    gap: 15px;
+
+    align-items: center;
+}
+
+#gifGroup.show {
+    display: grid;
+}
+
+#gifGroup .tenor-gif-embed {
+    max-width: 140px;
+    margin: auto;
+}
+
+#bgWrapperYes {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+#bgWrapperYes.show {
+    opacity: 1;
+    pointer-events: none;
+}
+
+#bgVideoYes {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
     </style>
 </head>
 <body>
+    <div id="bgWrapper">
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="nanobombs-cat.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="bgWrapperYes">
+        <video autoplay muted loop playsinline id="bgVideoYes">
+            <source src="amazed-wow.mp4" type="video/mp4">
+        </video>
+    </div>
+
+
     <canvas id="confettiCanvas"></canvas>
 
     <div class="boundary-container" id="boundary">
@@ -174,8 +268,14 @@
 
             <div class="celebration" id="celebrationScreen">
                 <h1>I knew you'd say yes! ❤️</h1>
-                <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Celebration" class="celebration-gif">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzk5bjdxZ3RhNGdyYzl5bHQ5bDRjeGF3Mm5hejRndXFoamUwM3lkYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YLPOIP1jPu1N87yemm/giphy.gif" alt="Celebration" class="celebration-gif">
                 <p style="color: #d63384; font-weight: 600;">You've made me the happiest! 💖✨</p>
+                <div id="gifGroup">
+                    <div class="tenor-gif-embed" data-postid="7995560765945148820" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>
+
+                    <div class="tenor-gif-embed" data-postid="14855460725867107717" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>
+
+                </div>
             </div>
         </div>
 
@@ -292,7 +392,21 @@
         yesBtn.addEventListener('click', () => {
             document.getElementById('questionScreen').style.display = 'none';
             document.getElementById('celebrationScreen').classList.add('active');
-            noBtn.style.display = 'none'; // Bye bye no button
+
+            // Hide first background
+            document.getElementById('bgWrapper').classList.add('hidden');
+            document.getElementById('bgVideo').pause();
+
+            // Show second background
+            setTimeout(() => {
+                document.getElementById('bgWrapperYes').classList.add('show');
+                document.getElementById('bgVideoYes').play();
+            }, 300);
+
+            document.getElementById('bgVideoYes').play();
+
+            document.getElementById('gifGroup').classList.add('show');
+            noBtn.style.display = 'none';
             startConfetti();
         });
 
@@ -333,5 +447,8 @@
             animate();
         }
     </script>
+
+    <script async src="https://tenor.com/embed.js"></script>
+
 </body>
 </html>
