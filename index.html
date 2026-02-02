@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe6f0 25%, #ffd6e8 50%, #ffc6e0 75%, #ffb6d8 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Hearts */
+        body::before {
+            content: '💕 💖 💗 💝 ❤️ 💕 💖 💗 💝 ❤️';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: floatHearts 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes floatHearts {
+            from { transform: translateY(0) translateX(0); }
+            to { transform: translateY(100vh) translateX(100px); }
+        }
+
+        /* THE GIANT DIV (Boundary)
+           The No button is trapped inside this container.
+        */
+        .boundary-container {
+            width: 90vw; /* 90% of viewport width */
+            height: 90vh; /* 90% of viewport height */
+            position: relative; /* Acts as the anchor for the absolute No button */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border: 1px dashed rgba(255, 0, 0, 0.2); Uncomment to see the boundary */
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 8px 32px rgba(255, 182, 216, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 20; /* Card sits above the boundary */
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            color: #d63384;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(255, 182, 216, 0.4);
+            line-height: 1.3;
+        }
+
+        /* Button styling */
+        .buttons-placeholder {
+            min-height: 80px; /* Reserves space in the card so layout doesn't collapse */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        button {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            user-select: none;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+            color: white;
+            padding: 1rem 3rem;
+            font-size: 1.4rem;
+            z-index: 50;
+            transition: transform 0.2s;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        #noBtn {
+            background: #f0f0f0;
+            color: #666;
+            padding: 0.8rem 2rem;
+            position: absolute; /* Freely moving inside boundary-container */
+            z-index: 40;
+            transition: left 0.15s ease-out, top 0.15s ease-out; /* Smooth glide */
+            white-space: nowrap;
+        }
+
+        /* Celebration Screen */
+        .celebration {
+            display: none;
+            text-align: center;
+        }
+
+        .celebration.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .celebration-gif {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 20px;
+            margin: 1.5rem auto;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="boundary-container" id="boundary">
+        
+        <div class="card">
+            <div id="questionScreen">
+                <h1>Will you be my Valentine? 💝</h1>
+                <div class="buttons-placeholder">
+                    <button id="yesBtn">Yes! 💕</button>
+                    </div>
+            </div>
+
+            <div class="celebration" id="celebrationScreen">
+                <h1>I knew you'd say yes! ❤️</h1>
+                <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Celebration" class="celebration-gif">
+                <p style="color: #d63384; font-weight: 600;">You've made me the happiest! 💖✨</p>
+            </div>
+        </div>
+
+        <button id="noBtn">No</button>
+
+    </div>
+
+    <script>
+        const boundary = document.getElementById('boundary');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const ctx = confettiCanvas.getContext('2d');
+
+        // --- 1. INITIAL POSITIONING ---
+        // We want the No button to visually appear next to the Yes button initially
+        function centerNoButton() {
+            const yesRect = yesBtn.getBoundingClientRect();
+            const boundaryRect = boundary.getBoundingClientRect();
+
+            // Calculate position relative to boundary
+            const initialLeft = (yesRect.right - boundaryRect.left) + 20; // 20px gap
+            const initialTop = (yesRect.top - boundaryRect.top) + (yesRect.height / 2) - (noBtn.offsetHeight / 2);
+
+            noBtn.style.left = `${initialLeft}px`;
+            noBtn.style.top = `${initialTop}px`;
+        }
+        
+        // Run on load and resize to keep it neat until interaction
+        window.addEventListener('load', centerNoButton);
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Optional: reset no button on resize to prevent it getting lost
+            // centerNoButton(); 
+        });
+
+        // --- 2. THE FLEEING LOGIC ---
+        function moveNoButton(clientX, clientY) {
+            const boundaryRect = boundary.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            const yesRect = yesBtn.getBoundingClientRect();
+
+            // Mouse position relative to the boundary container
+            const mouseX = clientX - boundaryRect.left;
+            const mouseY = clientY - boundaryRect.top;
+
+            // Button center relative to the boundary container
+            const btnLeft = parseFloat(noBtn.style.left) || 0;
+            const btnTop = parseFloat(noBtn.style.top) || 0;
+            const btnCenterX = btnLeft + btnRect.width / 2;
+            const btnCenterY = btnTop + btnRect.height / 2;
+
+            // Distance Check
+            const dx = mouseX - btnCenterX;
+            const dy = mouseY - btnCenterY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            const dangerZone = 120; // Radius where button gets scared
+
+            if (distance < dangerZone) {
+                // Calculate vector away from mouse
+                const angle = Math.atan2(dy, dx);
+                const pushDistance = 50; // How far it jumps per frame
+
+                // New Position
+                let newX = btnCenterX - Math.cos(angle) * pushDistance - (btnRect.width / 2);
+                let newY = btnCenterY - Math.sin(angle) * pushDistance - (btnRect.height / 2);
+
+                // --- BOUNDARY CLAMPING (Stay inside the Giant Div) ---
+                // 0 is left edge, boundaryRect.width is right edge
+                const maxX = boundaryRect.width - btnRect.width;
+                const maxY = boundaryRect.height - btnRect.height;
+
+                newX = Math.max(0, Math.min(maxX, newX));
+                newY = Math.max(0, Math.min(maxY, newY));
+
+                // --- OVERLAP PREVENTION (Don't touch the Yes button) ---
+                // We need Yes button rect relative to boundary for comparison
+                const yesRelLeft = yesRect.left - boundaryRect.left;
+                const yesRelTop = yesRect.top - boundaryRect.top;
+                const buffer = 20;
+
+                // Check collision
+                if (
+                    newX < yesRelLeft + yesRect.width + buffer &&
+                    newX + btnRect.width > yesRelLeft - buffer &&
+                    newY < yesRelTop + yesRect.height + buffer &&
+                    newY + btnRect.height > yesRelTop - buffer
+                ) {
+                    // Overlap detected! Teleport to a safe corner
+                    // If we are near top-left, go bottom-right, etc.
+                    if (newY < boundaryRect.height / 2) {
+                        newY = maxY; 
+                    } else {
+                        newY = 0;
+                    }
+                }
+
+                // Apply
+                noBtn.style.left = `${newX}px`;
+                noBtn.style.top = `${newY}px`;
+            }
+        }
+
+        document.addEventListener('mousemove', (e) => moveNoButton(e.clientX, e.clientY));
+        
+        // Touch support for mobile
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            moveNoButton(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+
+        // --- 3. CELEBRATION LOGIC ---
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('celebrationScreen').classList.add('active');
+            noBtn.style.display = 'none'; // Bye bye no button
+            startConfetti();
+        });
+
+        // --- CONFETTI (Standard) ---
+        function resizeCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        
+        let confettiPieces = [];
+        class ConfettiPiece {
+            constructor() {
+                this.x = Math.random() * confettiCanvas.width;
+                this.y = -20;
+                this.size = Math.random() * 8 + 5;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.color = ['#ff6b9d', '#ffc6e0', '#ff8fab', '#d63384'][Math.floor(Math.random() * 4)];
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > confettiCanvas.height) this.y = -20;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        function startConfetti() {
+            for(let i=0; i<150; i++) confettiPieces.push(new ConfettiPiece());
+            function animate() {
+                ctx.clearRect(0,0, confettiCanvas.width, confettiCanvas.height);
+                confettiPieces.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
